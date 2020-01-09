@@ -40,6 +40,69 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="role" class="col-md-4 col-form-label text-md-right">As</label>
+
+                            <div class="col-md-6">
+                                <select class="form-control @error('role') is-invalid @enderror" name="role" id="role" required>
+                                    <option value=""></option>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->id }}" {{ (old('role') == $role->id)?'selected':'' }}>{{ $role->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                @error('role')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="block_shop" style="display:none;">
+                            <div class="form-group row">
+                                <label for="shop_name" class="col-md-4 col-form-label text-md-right">Shop Name</label>
+
+                                <div class="col-md-6">
+                                    <input id="shop_name" type="shop_name" class="form-control @error('shop_name') is-invalid @enderror" name="shop_name" value="{{ old('shop_name') }}">
+
+                                    @error('shop_name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="phone" class="col-md-4 col-form-label text-md-right">Phone</label>
+
+                            <div class="col-md-6">
+                                <input id="phone" type="phone" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}">
+
+                                @error('phone')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="email" class="col-md-4 col-form-label text-md-right">Address</label>
+
+                            <div class="col-md-6">
+                                <textarea name="address" class="form-control @error('address') is-invalid @enderror" id="address" rows="3">{{ old('address') }}</textarea>
+
+                                @error('address')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
                             <div class="col-md-6">
@@ -74,4 +137,22 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+    $('#role').on('change', function () {
+        if(this.value == 1) {
+            $('.block_shop').show();
+        } else {
+            $('.block_shop').hide();
+        }
+    })
+
+    @if(old('role') == 1)
+        @if($errors->any())
+            $('.block_shop').show();
+        @endif
+    @endif
+</script>
 @endsection

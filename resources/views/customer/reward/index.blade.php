@@ -12,7 +12,7 @@
 
                     <div class="well">
                         <h5><b>Your Point :</b></h5>
-                        <h5><b>{{ $point->points }}</b> </h5>
+                        <h5><b>{{ ($point->points)??'0' }}</b> </h5>
                     </div>
 
                     <div class="row">

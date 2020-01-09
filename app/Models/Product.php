@@ -49,6 +49,8 @@ class Product extends Model
 
     public function scopeDataProduct()
     {
-        return Product::query()->productSelect();
+        return Product::query()->productSelect()->whereHas('merchant', function ($q) {
+            return $q->whereMerchantId(auth()->user()->id);
+        });
     }
 }

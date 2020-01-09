@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use App\Role;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -30,7 +31,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = 'login';
 
     /**
      * Create a new controller instance.
@@ -44,7 +45,7 @@ class RegisterController extends Controller
 
     public function showRegistrationForm()
     {
-        $roles = Role::query()->all();
+        $roles = Role::query()->get();
 
         return view('auth.register', compact('roles'));
     }
@@ -57,11 +58,20 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
+            'role' => ['required', 'string'],
+            'phone' => ['required', 'numeric'],
+            'address' => ['required', 'string'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        ];
+
+        if ($data['role'] == 1) {
+            $rules['shop_name'] = ['required', 'string'];
+        }
+
+        return Validator::make($data, $rules);
     }
 
     /**
@@ -73,9 +83,27 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
+            'role_id' => $data['role'],
             'name' => $data['name'],
+            'shop_name' => $data['shop_name'],
             'email' => $data['email'],
+            'phone' => $data['phone'],
+            'address' => $data['address'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
+        if ($user->role->name == 'customer') {
+            return redirect()->route('home');
+        }
     }
 }

@@ -18,11 +18,13 @@ class CustomerRewardController extends Controller
     public function store(Reward $reward)
     {
         $user = auth()->user();
-        if ($user->point->points >= $reward->price) {
-            $user->rewards()->attach($reward);
-            $user->point()->update(['points' => $user->point->points - $reward->price]);
+        if ($user->point) {
+            if ($user->point->points >= $reward->price) {
+                $user->rewards()->attach($reward);
+                $user->point()->update(['points' => $user->point->points - $reward->price]);
 
-            return redirect()->route('customer.reward.index')->with('success', 'Redeem Successfully.');
+                return redirect()->route('customer.reward.index')->with('success', 'Redeem Successfully.');
+            }
         }
 
         return redirect()->route('customer.reward.index')->with('error', 'Not enough point.');
